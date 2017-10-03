@@ -18,9 +18,23 @@ namespace Minesweeper
         private Board board;
         private System.Timers.Timer aTimer;
         private bool IsGameOver;
+
         public Minesweeper()
         {
             InitializeComponent();
+            ButtonRows = 10;
+            ButtonCols = 10;
+            Bombs = 20;
+            NewGame();
+        }
+
+        public Minesweeper(int rows, int cols, int bombs)
+        {
+            InitializeComponent();
+            ButtonRows = rows;
+            ButtonCols = cols;
+            Bombs = bombs;
+            NewGame();
         }
 
         private void OnTimedEvent(object sender, ElapsedEventArgs e)
@@ -51,7 +65,7 @@ namespace Minesweeper
             board = new Board(ButtonRows, ButtonCols);
             board.FillWithBombs(NumberBombs);
             DisplayBoard(board);
-            Height = (50 * ButtonRows) + 200;
+            Height = (50 * ButtonRows) + 250;
             Width = (50 * ButtonCols) + 20;
             foreach (var button in Controls.OfType<Button>())
             {
@@ -260,7 +274,7 @@ namespace Minesweeper
             {
                 Name = "Timer",
                 Text = "0",
-                Location = new Point(Width - 50, 50),
+                Location = new Point(Width - 70, 50),
                 Height = 100,
                 Width = 100,
                 Font = new Font(Font.FontFamily, 30)
@@ -282,6 +296,50 @@ namespace Minesweeper
                     Controls.Add(newButton);
                 }
             }
+        }
+
+        private void exitItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void newGameItem_Click(object sender, EventArgs e)
+        {
+            aTimer.Close();
+            NewGame();
+        }
+
+        private void beginnerItem_Click(object sender, EventArgs e)
+        {
+            ButtonRows = 8;
+            ButtonCols = 8;
+            Bombs = 10;
+            NewGame();
+        }
+
+        private void intermediateItem_Click(object sender, EventArgs e)
+        {
+            ButtonRows = 10;
+            ButtonCols = 10;
+            Bombs = 20;
+            NewGame();
+        }
+
+        private void expertItem_Click(object sender, EventArgs e)
+        {
+            ButtonRows = 15;
+            ButtonCols = 15;
+            Bombs = 75;
+            NewGame();
+        }
+
+        private void customItem_Click(object sender, EventArgs e)
+        {
+            Hide();
+            Settings settings = new Settings();
+
+            settings.Closed += (s, args) => Close();
+            settings.Show();
         }
     }
 }
