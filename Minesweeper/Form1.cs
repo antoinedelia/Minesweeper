@@ -10,11 +10,13 @@ namespace Minesweeper
     {
         private int ButtonRows = 10;
         private int ButtonCols = 10;
-        private int Bombs = 20;
-        private int Timer = 0;
+        private int Bombs;
+        private int TextBombs;
+        private int Timer;
+        private int NumberClickedCases;
         private Board board;
         private System.Timers.Timer aTimer;
-        private bool IsGameOver = false;
+        private bool IsGameOver;
         public Form1()
         {
             InitializeComponent();
@@ -42,6 +44,10 @@ namespace Minesweeper
             Controls.Clear();
             Height = 50 * ButtonRows;
             Width = 50 * ButtonRows;
+            Bombs = 10;
+            TextBombs = 10;
+            NumberClickedCases = 0;
+            IsGameOver = false;
             board = new Board(ButtonRows, ButtonCols);
             board.FillWithBombs(Bombs);
             DisplayBoard(board);
@@ -63,7 +69,6 @@ namespace Minesweeper
 
         private void ReplayGame(object sender, EventArgs e)
         {
-            IsGameOver = false;
             aTimer.Close();
             NewGame();
         }
@@ -87,9 +92,19 @@ namespace Minesweeper
                 if (e.Button == MouseButtons.Right)
                 {
                     if (button.BackgroundImage == null)
+                    {
                         button.BackgroundImage = Properties.Resources.Flag;
+                        Label numberBombs = Controls.Find("NumberBombs", true).FirstOrDefault() as Label;
+                        TextBombs--;
+                        numberBombs.Text = TextBombs.ToString();
+                    }
                     else
+                    {
                         button.BackgroundImage = null;
+                        Label numberBombs = Controls.Find("NumberBombs", true).FirstOrDefault() as Label;
+                        TextBombs++;
+                        numberBombs.Text = TextBombs.ToString();
+                    }
                     return;
                 }
             }
@@ -102,6 +117,7 @@ namespace Minesweeper
             else
             {
                 clickedCase.IsClicked = true;
+                NumberClickedCases++;
                 button.BackColor = Color.WhiteSmoke;
                 int numberBombs = board.GetNumberBombsAround(board, clickedCase);
                 if (numberBombs == 0)
@@ -117,7 +133,19 @@ namespace Minesweeper
                     if (numberBombs == 3) button.ForeColor = Color.Red;
                     if (numberBombs == 4) button.ForeColor = Color.BlueViolet;
                 }
+                if(NumberClickedCases == (ButtonRows*ButtonCols-Bombs))
+                {
+                    Win();
+                }
             }
+        }
+
+        private void Win()
+        {
+            Button replayButton = Controls.Find("Replay", true).FirstOrDefault() as Button;
+            replayButton.BackgroundImage = Properties.Resources.Win;
+            DisplayBombs();
+            IsGameOver = true;
         }
 
         private void Button_Click(object sender, MouseEventArgs e)
@@ -125,6 +153,7 @@ namespace Minesweeper
             ClickOnButton(sender, e);
         }
 
+        //TODO Improve this shit
         private void ClickButtonsAround(Case clickedCase)
         {
             if (clickedCase.Row - 1 >= 0)
@@ -172,6 +201,15 @@ namespace Minesweeper
         private void GameOver(Case clickedCase)
         {
             IsGameOver = true;
+            DisplayBombs();
+            Button buttonExplosion = Controls.Find(clickedCase.Row + ":" + clickedCase.Col, true).FirstOrDefault() as Button;
+            buttonExplosion.BackgroundImage = Properties.Resources.BombExplosion;
+            Button buttonReplay = Controls.Find("Replay", true).FirstOrDefault() as Button;
+            buttonReplay.BackgroundImage = Properties.Resources.GameOver;
+        }
+
+        private void DisplayBombs()
+        {
             for (int i = 0; i < ButtonRows; i++)
             {
                 for (int j = 0; j < ButtonCols; j++)
@@ -184,14 +222,30 @@ namespace Minesweeper
                     }
                 }
             }
-            Button buttonExplosion = Controls.Find(clickedCase.Row + ":" + clickedCase.Col, true).FirstOrDefault() as Button;
-            buttonExplosion.BackgroundImage = Properties.Resources.BombExplosion;
-            Button buttonReplay = Controls.Find("Replay", true).FirstOrDefault() as Button;
-            buttonReplay.BackgroundImage = Properties.Resources.GameOver;
         }
 
         private void DisplayBoard(Board board)
         {
+            PictureBox bombPicture = new PictureBox()
+            {
+                Name = "BombImage",
+                Image = Properties.Resources.Bomb,
+                Location = new Point(50, 50),
+                Height = 50,
+                Width = 50
+            };
+            Controls.Add(bombPicture);
+            Label numberBombs = new Label()
+            {
+                Name = "NumberBombs",
+                Text = Bombs.ToString(),
+                Location = new Point(100, 50),
+                Height = 100,
+                Width = 100,
+                Font = new Font(Font.FontFamily, 30)
+            };
+            Controls.Add(numberBombs);
+
             Button replayButton = new Button()
             {
                 Name = "Replay",
