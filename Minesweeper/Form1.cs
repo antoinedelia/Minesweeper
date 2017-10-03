@@ -9,7 +9,7 @@ namespace Minesweeper
     {
         private int ButtonRows = 10;
         private int ButtonCols = 10;
-        private int Bombs = 30;
+        private int Bombs = 20;
         private Board board;
         public Form1()
         {
@@ -19,8 +19,8 @@ namespace Minesweeper
             board = new Board(ButtonRows, ButtonCols);
             board.FillWithBombs(Bombs);
             DisplayBoard(board);
-            Height = (50 * ButtonRows) + 50;
-            Width = (50 * ButtonCols) + 50;
+            Height = (50 * ButtonRows) + 200;
+            Width = (50 * ButtonCols) + 20;
             foreach (var button in Controls.OfType<Button>())
             {
                 button.MouseUp += Button_Click;
@@ -152,12 +152,13 @@ namespace Minesweeper
             {
                 for (int j = 0; j < board.Col; j++)
                 {
+                    int size = Height/board.Row;
                     Button newButton = new Button()
                     {
                         Name = i.ToString() + ":" + j.ToString(),
-                        Location = new Point(j * (Height / (ButtonRows < ButtonCols ? ButtonRows : ButtonCols)), i * (Width / (ButtonRows < ButtonCols ? ButtonRows : ButtonCols))),
-                        Height = (Height / (board.Col < board.Row ? board.Col : board.Row)),
-                        Width = (Height / (board.Col < board.Row ? board.Col : board.Row))
+                        Location = new Point(j * size, i * size + 150),
+                        Height = size,
+                        Width = size
                     };
                     Controls.Add(newButton);
                 }

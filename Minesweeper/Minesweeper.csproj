@@ -85,9 +85,6 @@
     <None Include="Resources\Bomb.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Bomb.jpg" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Flag.png" />
   </ItemGroup>
   <ItemGroup>
