@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using System.Timers;
 using System.Windows.Forms;
 
 namespace Minesweeper
@@ -10,10 +11,35 @@ namespace Minesweeper
         private int ButtonRows = 10;
         private int ButtonCols = 10;
         private int Bombs = 20;
+        private int Timer = 0;
         private Board board;
+        private System.Timers.Timer aTimer;
+        private bool IsGameOver = false;
         public Form1()
         {
             InitializeComponent();
+            NewGame();
+        }
+
+        private void OnTimedEvent(object sender, ElapsedEventArgs e)
+        {
+            if (IsGameOver) return;
+            Timer++;
+            Label timer = Controls.Find("Timer", true).FirstOrDefault() as Label;
+            timer.Text = Timer.ToString();
+        }
+
+        private void NewGame()
+        {
+            aTimer = new System.Timers.Timer();
+            aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+            aTimer.Interval = 1000;
+            aTimer.Enabled = true;
+            aTimer.SynchronizingObject = this;
+            aTimer.Stop();
+            Timer = 0;
+
+            Controls.Clear();
             Height = 50 * ButtonRows;
             Width = 50 * ButtonRows;
             board = new Board(ButtonRows, ButtonCols);
@@ -23,9 +49,23 @@ namespace Minesweeper
             Width = (50 * ButtonCols) + 20;
             foreach (var button in Controls.OfType<Button>())
             {
-                button.MouseUp += Button_Click;
-                button.Click += Button_Click2;
+                if (button.Name == "Replay")
+                {
+                    button.Click += ReplayGame;
+                }
+                else
+                {
+                    button.MouseUp += Button_Click;
+                    button.Click += Button_Click2;
+                }
             }
+        }
+
+        private void ReplayGame(object sender, EventArgs e)
+        {
+            IsGameOver = false;
+            aTimer.Close();
+            NewGame();
         }
 
         private void Button_Click2(object sender, EventArgs e)
@@ -35,6 +75,7 @@ namespace Minesweeper
 
         private void ClickOnButton(object sender, MouseEventArgs e)
         {
+            aTimer.Start();
             Button button = ((Button)sender);
             string buttonName = button.Name;
             int row = Int32.Parse(buttonName.Substring(0, buttonName.LastIndexOf(':')));
@@ -130,6 +171,7 @@ namespace Minesweeper
 
         private void GameOver(Case clickedCase)
         {
+            IsGameOver = true;
             for (int i = 0; i < ButtonRows; i++)
             {
                 for (int j = 0; j < ButtonCols; j++)
@@ -144,15 +186,38 @@ namespace Minesweeper
             }
             Button buttonExplosion = Controls.Find(clickedCase.Row + ":" + clickedCase.Col, true).FirstOrDefault() as Button;
             buttonExplosion.BackgroundImage = Properties.Resources.BombExplosion;
+            Button buttonReplay = Controls.Find("Replay", true).FirstOrDefault() as Button;
+            buttonReplay.BackgroundImage = Properties.Resources.GameOver;
         }
 
         private void DisplayBoard(Board board)
         {
+            Button replayButton = new Button()
+            {
+                Name = "Replay",
+                BackgroundImage = Properties.Resources.Sun,
+                Location = new Point(Width / 2 - 20, 50),
+                Height = 50,
+                Width = 50
+            };
+            Controls.Add(replayButton);
+
+            Label timer = new Label()
+            {
+                Name = "Timer",
+                Text = "0",
+                Location = new Point(Width - 100, 50),
+                Height = 100,
+                Width = 100,
+                Font = new Font(Font.FontFamily, 30)
+            };
+            Controls.Add(timer);
+
             for (int i = 0; i < board.Row; i++)
             {
                 for (int j = 0; j < board.Col; j++)
                 {
-                    int size = Height/board.Row;
+                    int size = Height / board.Row;
                     Button newButton = new Button()
                     {
                         Name = i.ToString() + ":" + j.ToString(),
