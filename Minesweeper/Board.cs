@@ -35,12 +35,12 @@ namespace Minesweeper
             return true;
         }
 
+        //TODO Improve this when there's too many bombs
         public bool FillWithBombs(int numberOfBombs)
         {
             NumberOfBombs = numberOfBombs;
             if (!IsBoardCreated()) return false;
             if (numberOfBombs < 0) return false;
-            //TODO Randomly fill the board with bombs
             for (int i = 0; i < numberOfBombs; i++)
             {
                 bool CaseFilled = false;

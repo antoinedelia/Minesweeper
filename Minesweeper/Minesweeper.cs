@@ -6,21 +6,21 @@ using System.Windows.Forms;
 
 namespace Minesweeper
 {
-    public partial class Form1 : Form
+    public partial class Minesweeper : Form
     {
-        private int ButtonRows = 10;
-        private int ButtonCols = 10;
-        private int Bombs;
+        public int Bombs;
+        public int ButtonRows;
+        public int ButtonCols;
+        private int NumberBombs;
         private int TextBombs;
         private int Timer;
         private int NumberClickedCases;
         private Board board;
         private System.Timers.Timer aTimer;
         private bool IsGameOver;
-        public Form1()
+        public Minesweeper()
         {
             InitializeComponent();
-            NewGame();
         }
 
         private void OnTimedEvent(object sender, ElapsedEventArgs e)
@@ -31,7 +31,7 @@ namespace Minesweeper
             timer.Text = Timer.ToString();
         }
 
-        private void NewGame()
+        public void NewGame()
         {
             aTimer = new System.Timers.Timer();
             aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
@@ -44,12 +44,12 @@ namespace Minesweeper
             Controls.Clear();
             Height = 50 * ButtonRows;
             Width = 50 * ButtonRows;
-            Bombs = 10;
-            TextBombs = 10;
+            NumberBombs = Bombs;
+            TextBombs = Bombs;
             NumberClickedCases = 0;
             IsGameOver = false;
             board = new Board(ButtonRows, ButtonCols);
-            board.FillWithBombs(Bombs);
+            board.FillWithBombs(NumberBombs);
             DisplayBoard(board);
             Height = (50 * ButtonRows) + 200;
             Width = (50 * ButtonCols) + 20;
@@ -133,7 +133,7 @@ namespace Minesweeper
                     if (numberBombs == 3) button.ForeColor = Color.Red;
                     if (numberBombs == 4) button.ForeColor = Color.BlueViolet;
                 }
-                if(NumberClickedCases == (ButtonRows*ButtonCols-Bombs))
+                if(NumberClickedCases == (ButtonRows*ButtonCols-NumberBombs))
                 {
                     Win();
                 }
@@ -238,7 +238,7 @@ namespace Minesweeper
             Label numberBombs = new Label()
             {
                 Name = "NumberBombs",
-                Text = Bombs.ToString(),
+                Text = NumberBombs.ToString(),
                 Location = new Point(100, 50),
                 Height = 100,
                 Width = 100,
@@ -250,7 +250,7 @@ namespace Minesweeper
             {
                 Name = "Replay",
                 BackgroundImage = Properties.Resources.Sun,
-                Location = new Point(Width / 2 - 20, 50),
+                Location = new Point(Width / 2, 50),
                 Height = 50,
                 Width = 50
             };
@@ -260,7 +260,7 @@ namespace Minesweeper
             {
                 Name = "Timer",
                 Text = "0",
-                Location = new Point(Width - 100, 50),
+                Location = new Point(Width - 50, 50),
                 Height = 100,
                 Width = 100,
                 Font = new Font(Font.FontFamily, 30)
