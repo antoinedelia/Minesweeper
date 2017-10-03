@@ -8,11 +8,11 @@ namespace Minesweeper
 {
     class Board
     {
-        public int Height { get; set; }
-        public int Width { get; set; }
+        public int Row { get; set; }
+        public int Col { get; set; }
         public int NumberOfBombs { get; set; }
 
-        private Case[][] cases;
+        public Case[][] Cases { get; set; }
 
         public Board(int h = 10, int w = 10)
         {
@@ -21,15 +21,15 @@ namespace Minesweeper
 
         private bool InitializeBoard(int h, int w)
         {
-            Height = h;
-            Width = w;
-            cases = new Case[Height][];
+            Row = h;
+            Col = w;
+            Cases = new Case[Row][];
             for (int i = 0; i < h; i++)
             {
-                cases[i] = new Case[Width];
+                Cases[i] = new Case[Col];
                 for (int j = 0; j < w; j++)
                 {
-                    cases[i][j] = new Case();
+                    Cases[i][j] = new Case(i, j);
                 }
             }
             return true;
@@ -41,12 +41,68 @@ namespace Minesweeper
             if (!IsBoardCreated()) return false;
             if (numberOfBombs < 0) return false;
             //TODO Randomly fill the board with bombs
+            for (int i = 0; i < numberOfBombs; i++)
+            {
+                bool CaseFilled = false;
+                do
+                {
+                    Random random = new Random();
+                    int randomNumberRow = random.Next(0, Row);
+                    int randomNumberCol = random.Next(0, Col);
+                    if (!Cases[randomNumberRow][randomNumberCol].IsBomb)
+                    {
+                        Cases[randomNumberRow][randomNumberCol].IsBomb = true;
+                        CaseFilled = true;
+                    }
+                } while (!CaseFilled);
+            }
+            DisplayConsole();
             return true;
+        }
+
+        public int GetNumberBombsAround(Board board, Case clickedCase)
+        {
+            int numberBombs = 0;
+            if (clickedCase.Row - 1 >= 0)
+            {
+                if(clickedCase.Col - 1 >= 0)
+                    if (board.Cases[clickedCase.Row - 1][clickedCase.Col - 1].IsBomb) numberBombs++;
+                if (board.Cases[clickedCase.Row - 1][clickedCase.Col].IsBomb) numberBombs++;
+                if (clickedCase.Col + 1 < board.Col)
+                    if (board.Cases[clickedCase.Row - 1][clickedCase.Col + 1].IsBomb) numberBombs++;
+            }
+            if (clickedCase.Row + 1 < board.Row)
+            {
+                if (clickedCase.Col - 1 >= 0)
+                    if (board.Cases[clickedCase.Row + 1][clickedCase.Col - 1].IsBomb) numberBombs++;
+                if (board.Cases[clickedCase.Row + 1][clickedCase.Col].IsBomb) numberBombs++;
+                if (clickedCase.Col + 1 < board.Col)
+                    if (board.Cases[clickedCase.Row + 1][clickedCase.Col + 1].IsBomb) numberBombs++;
+            }
+            if (clickedCase.Col - 1 >= 0)
+                if (board.Cases[clickedCase.Row][clickedCase.Col - 1].IsBomb) numberBombs++;
+            if (clickedCase.Col + 1 < board.Col)
+                if (board.Cases[clickedCase.Row][clickedCase.Col + 1].IsBomb) numberBombs++;
+
+            return numberBombs;
+        }
+
+        private void DisplayConsole()
+        {
+            for (int i = 0; i < Row; i++)
+            {
+                for (int j = 0; j < Col; j++)
+                {
+                    string test = Cases[i][j].IsBomb ? "X" : ".";
+                    Console.Write(test);
+                }
+                Console.Write("\n");
+            }
         }
 
         private bool IsBoardCreated()
         {
-            return !(Height == 0 || Width == 0);
+            return !(Row == 0 || Col == 0);
         }
     }
 }
