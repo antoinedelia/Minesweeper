@@ -10,9 +10,10 @@ using System.Windows.Forms;
 
 namespace Minesweeper
 {
-    public partial class Config : Form
+    public partial class Settings : Form
     {
-        public Config()
+        //TODO Add high scores
+        public Settings()
         {
             InitializeComponent();
         }
