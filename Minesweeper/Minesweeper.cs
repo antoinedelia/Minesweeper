@@ -314,6 +314,7 @@ namespace Minesweeper
             ButtonRows = 8;
             ButtonCols = 8;
             Bombs = 10;
+            aTimer.Close();
             NewGame();
         }
 
@@ -322,6 +323,7 @@ namespace Minesweeper
             ButtonRows = 10;
             ButtonCols = 10;
             Bombs = 20;
+            aTimer.Close();
             NewGame();
         }
 
@@ -330,6 +332,7 @@ namespace Minesweeper
             ButtonRows = 15;
             ButtonCols = 15;
             Bombs = 75;
+            aTimer.Close();
             NewGame();
         }
 
