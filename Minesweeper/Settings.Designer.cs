@@ -85,7 +85,7 @@
             // 
             this.numberBombs.Location = new System.Drawing.Point(152, 30);
             this.numberBombs.Maximum = new decimal(new int[] {
-            50,
+            99,
             0,
             0,
             0});
@@ -147,7 +147,7 @@
             0,
             0});
             // 
-            // Config
+            // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

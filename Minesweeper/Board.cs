@@ -38,23 +38,25 @@ namespace Minesweeper
         //TODO Improve this when there's too many bombs
         public bool FillWithBombs(int numberOfBombs)
         {
-            NumberOfBombs = numberOfBombs;
             if (!IsBoardCreated()) return false;
             if (numberOfBombs < 0) return false;
+            NumberOfBombs = numberOfBombs;
             Random random = new Random();
+
+            List<int[]> options = new List<int[]>();
+            for (int i = 0; i < Row; i++)
+                for (int j = 0; j < Col; j++)
+                    options.Add(new int[] {i, j});
+
             for (int i = 0; i < NumberOfBombs; i++)
             {
-                bool CaseFilled = false;
-                do
-                {
-                    int randomNumberRow = random.Next(0, Row);
-                    int randomNumberCol = random.Next(0, Col);
-                    if (!Cases[randomNumberRow][randomNumberCol].IsBomb)
-                    {
-                        Cases[randomNumberRow][randomNumberCol].IsBomb = true;
-                        CaseFilled = true;
-                    }
-                } while (!CaseFilled);
+                int randomOption = random.Next(options.Count);
+                int[] selectedOption = options.ElementAt(randomOption);
+
+                int randomNumberRow = selectedOption[0];
+                int randomNumberCol = selectedOption[1];
+                Cases[randomNumberRow][randomNumberCol].IsBomb = true;
+                options.RemoveAt(randomOption);
             }
             return true;
         }
