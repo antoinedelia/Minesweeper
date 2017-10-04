@@ -114,6 +114,8 @@ namespace Minesweeper
             int col = Int32.Parse(buttonName.Substring(buttonName.LastIndexOf(':') + 1));
             Case clickedCase = board.Cases[row][col];
             if (clickedCase.IsClicked) return;
+
+            // Flags
             if (e != null)
             {
                 if (e.Button == MouseButtons.Right)
@@ -135,34 +137,15 @@ namespace Minesweeper
                     return;
                 }
             }
+
             if (button.BackgroundImage != null) return;
 
             if (clickedCase.IsBomb)
-            {
                 GameOver(clickedCase);
-            }
+
             else
             {
-                clickedCase.IsClicked = true;
-                NumberClickedCases++;
-                button.BackColor = Color.WhiteSmoke;
-                if (clickedCase.NumberBombsAround == 0)
-                {
-                    ClickButtonsAround(clickedCase);
-                }
-                else
-                {
-                    button.Text = clickedCase.NumberBombsAround.ToString();
-                    button.Font = new Font(button.Font.FontFamily, 20);
-                    if (clickedCase.NumberBombsAround == 1) button.ForeColor = Color.Blue;
-                    if (clickedCase.NumberBombsAround == 2) button.ForeColor = Color.Green;
-                    if (clickedCase.NumberBombsAround == 3) button.ForeColor = Color.Red;
-                    if (clickedCase.NumberBombsAround == 4) button.ForeColor = Color.BlueViolet;
-                }
-                if(NumberClickedCases == (ButtonRows*ButtonCols-NumberBombs))
-                {
-                    Win();
-                }
+                Reveal(clickedCase, button);
             }
         }
 
@@ -179,48 +162,43 @@ namespace Minesweeper
             ClickOnButton(sender, e);
         }
 
-        //TODO Improve this shit
         private void ClickButtonsAround(Case clickedCase)
         {
-            if (clickedCase.Row - 1 >= 0)
+            for (int i = -1; i < 2; i++)
             {
-                if (clickedCase.Col - 1 >= 0)
+                for (int j = -1; j < 2; j++)
                 {
-                    Button button1 = Controls.Find((clickedCase.Row - 1).ToString() + ":" + (clickedCase.Col - 1).ToString(), true).FirstOrDefault() as Button;
-                    button1.PerformClick();
-                }
-                Button button2 = Controls.Find((clickedCase.Row - 1).ToString() + ":" + (clickedCase.Col).ToString(), true).FirstOrDefault() as Button;
-                button2.PerformClick();
-                if (clickedCase.Col + 1 < board.Col)
-                {
-                    Button button3 = Controls.Find((clickedCase.Row - 1).ToString() + ":" + (clickedCase.Col + 1).ToString(), true).FirstOrDefault() as Button;
-                    button3.PerformClick();
+                    if (clickedCase.Row + i >= 0 && clickedCase.Row + i < board.Row && clickedCase.Col + j >= 0 && clickedCase.Col + j < board.Col)
+                    {
+                        Button button1 = Controls.Find((clickedCase.Row + i).ToString() + ":" + (clickedCase.Col + j).ToString(), true).FirstOrDefault() as Button;
+                        if (!board.Cases[clickedCase.Row + i][clickedCase.Col + j].IsClicked)
+                            Reveal(board.Cases[clickedCase.Row + i][clickedCase.Col + j], button1);
+                    }
                 }
             }
-            if (clickedCase.Row + 1 < board.Row)
+        }
+
+        private void Reveal(Case clickedCase, Button button)
+        {
+            clickedCase.IsClicked = true;
+            NumberClickedCases++;
+            button.BackColor = Color.WhiteSmoke;
+            if (clickedCase.NumberBombsAround == 0)
             {
-                if (clickedCase.Col - 1 >= 0)
-                {
-                    Button button4 = Controls.Find((clickedCase.Row + 1).ToString() + ":" + (clickedCase.Col - 1).ToString(), true).FirstOrDefault() as Button;
-                    button4.PerformClick();
-                }
-                Button button5 = Controls.Find((clickedCase.Row + 1).ToString() + ":" + (clickedCase.Col).ToString(), true).FirstOrDefault() as Button;
-                button5.PerformClick();
-                if (clickedCase.Col + 1 < board.Col)
-                {
-                    Button button6 = Controls.Find((clickedCase.Row + 1).ToString() + ":" + (clickedCase.Col + 1).ToString(), true).FirstOrDefault() as Button;
-                    button6.PerformClick();
-                }
+                ClickButtonsAround(clickedCase);
             }
-            if (clickedCase.Col - 1 >= 0)
+            else
             {
-                Button button7 = Controls.Find((clickedCase.Row).ToString() + ":" + (clickedCase.Col - 1).ToString(), true).FirstOrDefault() as Button;
-                button7.PerformClick();
+                button.Text = clickedCase.NumberBombsAround.ToString();
+                button.Font = new Font(button.Font.FontFamily, 20);
+                if (clickedCase.NumberBombsAround == 1) button.ForeColor = Color.Blue;
+                if (clickedCase.NumberBombsAround == 2) button.ForeColor = Color.Green;
+                if (clickedCase.NumberBombsAround == 3) button.ForeColor = Color.Red;
+                if (clickedCase.NumberBombsAround == 4) button.ForeColor = Color.BlueViolet;
             }
-            if (clickedCase.Col + 1 < board.Col)
+            if (NumberClickedCases == (ButtonRows * ButtonCols - NumberBombs))
             {
-                Button button8 = Controls.Find((clickedCase.Row).ToString() + ":" + (clickedCase.Col + 1).ToString(), true).FirstOrDefault() as Button;
-                button8.PerformClick();
+                Win();
             }
         }
 

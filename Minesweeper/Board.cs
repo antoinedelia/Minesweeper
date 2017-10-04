@@ -34,15 +34,14 @@ namespace Minesweeper
             }
             return true;
         }
-
-        //TODO Improve this when there's too many bombs
+        
         public bool FillWithBombs(int numberOfBombs)
         {
             if (!IsBoardCreated()) return false;
             if (numberOfBombs < 0) return false;
             NumberOfBombs = numberOfBombs;
             Random random = new Random();
-
+            // Create options to pick bomb and delete it later so we can't choose the same position twice
             List<int[]> options = new List<int[]>();
             for (int i = 0; i < Row; i++)
                 for (int j = 0; j < Col; j++)
@@ -51,12 +50,10 @@ namespace Minesweeper
             for (int i = 0; i < NumberOfBombs; i++)
             {
                 int randomOption = random.Next(options.Count);
-                int[] selectedOption = options.ElementAt(randomOption);
-
-                int randomNumberRow = selectedOption[0];
-                int randomNumberCol = selectedOption[1];
-                Cases[randomNumberRow][randomNumberCol].IsBomb = true;
+                int randomNumberRow = options[randomOption][0];
+                int randomNumberCol = options[randomOption][1];
                 options.RemoveAt(randomOption);
+                Cases[randomNumberRow][randomNumberCol].IsBomb = true;
             }
             return true;
         }
