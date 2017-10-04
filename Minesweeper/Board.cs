@@ -41,12 +41,12 @@ namespace Minesweeper
             NumberOfBombs = numberOfBombs;
             if (!IsBoardCreated()) return false;
             if (numberOfBombs < 0) return false;
-            for (int i = 0; i < numberOfBombs; i++)
+            Random random = new Random();
+            for (int i = 0; i < NumberOfBombs; i++)
             {
                 bool CaseFilled = false;
                 do
                 {
-                    Random random = new Random();
                     int randomNumberRow = random.Next(0, Row);
                     int randomNumberCol = random.Next(0, Col);
                     if (!Cases[randomNumberRow][randomNumberCol].IsBomb)
@@ -56,44 +56,31 @@ namespace Minesweeper
                     }
                 } while (!CaseFilled);
             }
-            DisplayConsole();
             return true;
         }
 
-        public int GetNumberBombsAround(Board board, Case clickedCase)
+        public void GetNumberBombsAround(Case clickedCase)
         {
             int numberBombs = 0;
-            if (clickedCase.Row - 1 >= 0)
+            for (int i = -1; i < 2; i++)
             {
-                if(clickedCase.Col - 1 >= 0)
-                    if (board.Cases[clickedCase.Row - 1][clickedCase.Col - 1].IsBomb) numberBombs++;
-                if (board.Cases[clickedCase.Row - 1][clickedCase.Col].IsBomb) numberBombs++;
-                if (clickedCase.Col + 1 < board.Col)
-                    if (board.Cases[clickedCase.Row - 1][clickedCase.Col + 1].IsBomb) numberBombs++;
+                for (int j = -1; j < 2; j++)
+                {
+                    if (clickedCase.Row + i >= 0 && clickedCase.Row + i < Row && clickedCase.Col + j >= 0 && clickedCase.Col + j < Col)
+                        if (Cases[clickedCase.Row + i][clickedCase.Col + j].IsBomb)
+                            numberBombs++;
+                }
             }
-            if (clickedCase.Row + 1 < board.Row)
-            {
-                if (clickedCase.Col - 1 >= 0)
-                    if (board.Cases[clickedCase.Row + 1][clickedCase.Col - 1].IsBomb) numberBombs++;
-                if (board.Cases[clickedCase.Row + 1][clickedCase.Col].IsBomb) numberBombs++;
-                if (clickedCase.Col + 1 < board.Col)
-                    if (board.Cases[clickedCase.Row + 1][clickedCase.Col + 1].IsBomb) numberBombs++;
-            }
-            if (clickedCase.Col - 1 >= 0)
-                if (board.Cases[clickedCase.Row][clickedCase.Col - 1].IsBomb) numberBombs++;
-            if (clickedCase.Col + 1 < board.Col)
-                if (board.Cases[clickedCase.Row][clickedCase.Col + 1].IsBomb) numberBombs++;
-
-            return numberBombs;
+            Cases[clickedCase.Row][clickedCase.Col].NumberBombsAround = numberBombs;
         }
 
-        private void DisplayConsole()
+        public void DisplayConsole()
         {
             for (int i = 0; i < Row; i++)
             {
                 for (int j = 0; j < Col; j++)
                 {
-                    string test = Cases[i][j].IsBomb ? "X" : ".";
+                    string test = Cases[i][j].IsBomb ? "X" : Cases[i][j].NumberBombsAround.ToString();
                     Console.Write(test);
                 }
                 Console.Write("\n");

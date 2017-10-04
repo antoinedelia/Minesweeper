@@ -10,6 +10,7 @@ namespace Minesweeper
     {
         public bool IsBomb { get; set; }
         public bool IsClicked { get; set; }
+        public int NumberBombsAround { get; set; }
         public int Row { get; set; }
         public int Col { get; set; }
 

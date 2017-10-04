@@ -64,6 +64,7 @@ namespace Minesweeper
             IsGameOver = false;
             board = new Board(ButtonRows, ButtonCols);
             board.FillWithBombs(NumberBombs);
+            CalculateBombsAroundEachCase();
             DisplayBoard(board);
             Height = (50 * ButtonRows) + 250;
             Width = (50 * ButtonCols) + 20;
@@ -77,6 +78,18 @@ namespace Minesweeper
                 {
                     button.MouseUp += Button_Click;
                     button.Click += Button_Click2;
+                }
+            }
+            board.DisplayConsole();
+        }
+
+        private void CalculateBombsAroundEachCase()
+        {
+            for (int i = 0; i < board.Row; i++)
+            {
+                for (int j = 0; j < board.Col; j++)
+                {
+                    board.GetNumberBombsAround(board.Cases[i][j]);
                 }
             }
         }
@@ -133,19 +146,18 @@ namespace Minesweeper
                 clickedCase.IsClicked = true;
                 NumberClickedCases++;
                 button.BackColor = Color.WhiteSmoke;
-                int numberBombs = board.GetNumberBombsAround(board, clickedCase);
-                if (numberBombs == 0)
+                if (clickedCase.NumberBombsAround == 0)
                 {
                     ClickButtonsAround(clickedCase);
                 }
                 else
                 {
-                    button.Text = numberBombs.ToString();
+                    button.Text = clickedCase.NumberBombsAround.ToString();
                     button.Font = new Font(button.Font.FontFamily, 20);
-                    if (numberBombs == 1) button.ForeColor = Color.Blue;
-                    if (numberBombs == 2) button.ForeColor = Color.Green;
-                    if (numberBombs == 3) button.ForeColor = Color.Red;
-                    if (numberBombs == 4) button.ForeColor = Color.BlueViolet;
+                    if (clickedCase.NumberBombsAround == 1) button.ForeColor = Color.Blue;
+                    if (clickedCase.NumberBombsAround == 2) button.ForeColor = Color.Green;
+                    if (clickedCase.NumberBombsAround == 3) button.ForeColor = Color.Red;
+                    if (clickedCase.NumberBombsAround == 4) button.ForeColor = Color.BlueViolet;
                 }
                 if(NumberClickedCases == (ButtonRows*ButtonCols-NumberBombs))
                 {
