@@ -36,6 +36,8 @@
             this.numberBombs = new System.Windows.Forms.NumericUpDown();
             this.numberCols = new System.Windows.Forms.NumericUpDown();
             this.numberRows = new System.Windows.Forms.NumericUpDown();
+            this.sizeButtons = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numberBombs)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numberCols)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numberRows)).BeginInit();
@@ -147,18 +149,43 @@
             0,
             0});
             // 
+            // sizeButtons
+            // 
+            this.sizeButtons.FormattingEnabled = true;
+            this.sizeButtons.Items.AddRange(new object[] {
+            "Small",
+            "Medium",
+            "Big"});
+            this.sizeButtons.Location = new System.Drawing.Point(151, 135);
+            this.sizeButtons.Name = "sizeButtons";
+            this.sizeButtons.Size = new System.Drawing.Size(121, 21);
+            this.sizeButtons.TabIndex = 6;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(12, 138);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(37, 18);
+            this.label4.TabIndex = 3;
+            this.label4.Text = "Size";
+            // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 261);
+            this.Controls.Add(this.sizeButtons);
             this.Controls.Add(this.numberRows);
             this.Controls.Add(this.numberCols);
             this.Controls.Add(this.numberBombs);
             this.Controls.Add(this.play);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Settings";
             this.Text = "Settings";
@@ -178,5 +205,7 @@
         private System.Windows.Forms.NumericUpDown numberBombs;
         private System.Windows.Forms.NumericUpDown numberCols;
         private System.Windows.Forms.NumericUpDown numberRows;
+        private System.Windows.Forms.ComboBox sizeButtons;
+        private System.Windows.Forms.Label label4;
     }
 }

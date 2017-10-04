@@ -11,6 +11,7 @@ namespace Minesweeper
         public int Bombs;
         public int ButtonRows;
         public int ButtonCols;
+        public int ButtonSize;
         private int NumberBombs;
         private int TextBombs;
         private int Timer;
@@ -26,15 +27,17 @@ namespace Minesweeper
             ButtonRows = 9;
             ButtonCols = 9;
             Bombs = 10;
+            ButtonSize = 50;
             NewGame();
         }
 
-        public Minesweeper(int rows, int cols, int bombs)
+        public Minesweeper(int rows, int cols, int bombs, int size)
         {
             InitializeComponent();
             ButtonRows = rows;
             ButtonCols = cols;
             Bombs = bombs;
+            ButtonSize = size;
             NewGame();
         }
 
@@ -57,8 +60,8 @@ namespace Minesweeper
             Timer = 0;
 
             Controls.Clear();
-            Height = 50 * ButtonRows;
-            Width = 50 * ButtonRows;
+            Height = ButtonSize * ButtonRows;
+            Width = ButtonSize * ButtonRows;
             NumberBombs = Bombs;
             TextBombs = Bombs;
             NumberClickedCases = 0;
@@ -67,8 +70,8 @@ namespace Minesweeper
             board.FillWithBombs(NumberBombs);
             CalculateBombsAroundEachCase();
             DisplayBoard(board);
-            Height = (50 * ButtonRows) + 250;
-            Width = (50 * ButtonCols) + 20;
+            Height = (ButtonSize * ButtonRows) + 250;
+            Width = (ButtonSize * ButtonCols) + 20;
             foreach (var button in Controls.OfType<Button>())
             {
                 if (button.Name == "Replay")
@@ -143,11 +146,8 @@ namespace Minesweeper
 
             if (clickedCase.IsBomb)
                 Lose(clickedCase);
-
             else
-            {
                 Reveal(clickedCase, button);
-            }
         }
 
         private void Button_Click(object sender, MouseEventArgs e)
@@ -184,7 +184,7 @@ namespace Minesweeper
             else
             {
                 button.Text = clickedCase.NumberBombsAround.ToString();
-                button.Font = new Font(button.Font.FontFamily, 20);
+                button.Font = new Font(button.Font.FontFamily, ButtonSize / 3);
                 if (clickedCase.NumberBombsAround == 1) button.ForeColor = Color.Blue;
                 if (clickedCase.NumberBombsAround == 2) button.ForeColor = Color.Green;
                 if (clickedCase.NumberBombsAround == 3) button.ForeColor = Color.Red;
@@ -226,18 +226,15 @@ namespace Minesweeper
                     button.Enabled = false;
                     if (board.Cases[i][j].IsBomb)
                     {
-                        if(GameWin)
+                        if (GameWin)
                             button.BackgroundImage = Properties.Resources.Flag;
                         else
+                            if (button.BackgroundImage == null)
                             button.BackgroundImage = Properties.Resources.Bomb;
                     }
                     else
-                    {
                         if (!GameWin && button.BackgroundImage != null)
-                        {
-                            button.BackgroundImage = Properties.Resources.WrongBomb;
-                        }
-                    }
+                        button.BackgroundImage = Properties.Resources.WrongBomb;
                 }
             }
         }
@@ -248,19 +245,21 @@ namespace Minesweeper
             {
                 Name = "BombImage",
                 Image = Properties.Resources.Bomb,
-                Location = new Point(50, 50),
-                Height = 50,
-                Width = 50
+                Location = new Point(30, 50),
+                Height = ButtonSize,
+                Width = ButtonSize,
+                Size = new Size(ButtonSize, ButtonSize),
+                SizeMode = PictureBoxSizeMode.StretchImage
             };
             Controls.Add(bombPicture);
             Label numberBombs = new Label()
             {
                 Name = "NumberBombs",
                 Text = NumberBombs.ToString(),
-                Location = new Point(100, 50),
-                Height = 100,
-                Width = 100,
-                Font = new Font(Font.FontFamily, 30)
+                Location = new Point(ButtonSize * 2, 50),
+                Height = ButtonSize,
+                Width = ButtonSize + 20,
+                Font = new Font(Font.FontFamily, ButtonSize/2)
             };
             Controls.Add(numberBombs);
 
@@ -269,8 +268,9 @@ namespace Minesweeper
                 Name = "Replay",
                 BackgroundImage = Properties.Resources.Sun,
                 Location = new Point(Width / 2, 50),
-                Height = 50,
-                Width = 50
+                Height = ButtonSize,
+                Width = ButtonSize,
+                BackgroundImageLayout = ImageLayout.Stretch
             };
             Controls.Add(replayButton);
 
@@ -278,10 +278,10 @@ namespace Minesweeper
             {
                 Name = "Timer",
                 Text = "0",
-                Location = new Point(Width - 70, 50),
-                Height = 100,
-                Width = 100,
-                Font = new Font(Font.FontFamily, 30)
+                Location = new Point(Width - 100, 50),
+                Height = ButtonSize,
+                Width = ButtonSize + 50,
+                Font = new Font(Font.FontFamily, ButtonSize/2)
             };
             Controls.Add(timer);
 
@@ -289,13 +289,13 @@ namespace Minesweeper
             {
                 for (int j = 0; j < board.Col; j++)
                 {
-                    int size = Height / board.Row;
                     Button newButton = new Button()
                     {
                         Name = i.ToString() + ":" + j.ToString(),
-                        Location = new Point(j * size, i * size + 150),
-                        Height = size,
-                        Width = size
+                        Location = new Point(j * ButtonSize, i * ButtonSize + 150),
+                        Height = ButtonSize,
+                        Width = ButtonSize,
+                        BackgroundImageLayout = ImageLayout.Stretch
                     };
                     Controls.Add(newButton);
                 }
