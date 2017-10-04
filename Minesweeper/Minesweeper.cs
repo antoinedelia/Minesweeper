@@ -18,13 +18,14 @@ namespace Minesweeper
         private Board board;
         private System.Timers.Timer aTimer;
         private bool IsGameOver;
+        private bool GameWin;
 
         public Minesweeper()
         {
             InitializeComponent();
-            ButtonRows = 10;
-            ButtonCols = 10;
-            Bombs = 20;
+            ButtonRows = 9;
+            ButtonCols = 9;
+            Bombs = 10;
             NewGame();
         }
 
@@ -141,20 +142,12 @@ namespace Minesweeper
             if (button.BackgroundImage != null) return;
 
             if (clickedCase.IsBomb)
-                GameOver(clickedCase);
+                Lose(clickedCase);
 
             else
             {
                 Reveal(clickedCase, button);
             }
-        }
-
-        private void Win()
-        {
-            Button replayButton = Controls.Find("Replay", true).FirstOrDefault() as Button;
-            replayButton.BackgroundImage = Properties.Resources.Win;
-            DisplayBombs();
-            IsGameOver = true;
         }
 
         private void Button_Click(object sender, MouseEventArgs e)
@@ -182,6 +175,7 @@ namespace Minesweeper
         {
             clickedCase.IsClicked = true;
             NumberClickedCases++;
+            button.BackgroundImage = null;
             button.BackColor = Color.WhiteSmoke;
             if (clickedCase.NumberBombsAround == 0)
             {
@@ -202,14 +196,24 @@ namespace Minesweeper
             }
         }
 
-        private void GameOver(Case clickedCase)
+        private void Lose(Case clickedCase)
         {
+            Button buttonReplay = Controls.Find("Replay", true).FirstOrDefault() as Button;
+            buttonReplay.BackgroundImage = Properties.Resources.GameOver;
             IsGameOver = true;
+            GameWin = false;
             DisplayBombs();
             Button buttonExplosion = Controls.Find(clickedCase.Row + ":" + clickedCase.Col, true).FirstOrDefault() as Button;
             buttonExplosion.BackgroundImage = Properties.Resources.BombExplosion;
-            Button buttonReplay = Controls.Find("Replay", true).FirstOrDefault() as Button;
-            buttonReplay.BackgroundImage = Properties.Resources.GameOver;
+        }
+
+        private void Win()
+        {
+            Button replayButton = Controls.Find("Replay", true).FirstOrDefault() as Button;
+            replayButton.BackgroundImage = Properties.Resources.Win;
+            IsGameOver = true;
+            GameWin = true;
+            DisplayBombs();
         }
 
         private void DisplayBombs()
@@ -222,7 +226,17 @@ namespace Minesweeper
                     button.Enabled = false;
                     if (board.Cases[i][j].IsBomb)
                     {
-                        button.BackgroundImage = Properties.Resources.Bomb;
+                        if(GameWin)
+                            button.BackgroundImage = Properties.Resources.Flag;
+                        else
+                            button.BackgroundImage = Properties.Resources.Bomb;
+                    }
+                    else
+                    {
+                        if (!GameWin && button.BackgroundImage != null)
+                        {
+                            button.BackgroundImage = Properties.Resources.WrongBomb;
+                        }
                     }
                 }
             }
@@ -301,8 +315,8 @@ namespace Minesweeper
 
         private void beginnerItem_Click(object sender, EventArgs e)
         {
-            ButtonRows = 8;
-            ButtonCols = 8;
+            ButtonRows = 9;
+            ButtonCols = 9;
             Bombs = 10;
             aTimer.Close();
             NewGame();
@@ -310,18 +324,18 @@ namespace Minesweeper
 
         private void intermediateItem_Click(object sender, EventArgs e)
         {
-            ButtonRows = 10;
-            ButtonCols = 10;
-            Bombs = 20;
+            ButtonRows = 16;
+            ButtonCols = 16;
+            Bombs = 40;
             aTimer.Close();
             NewGame();
         }
 
         private void expertItem_Click(object sender, EventArgs e)
         {
-            ButtonRows = 15;
-            ButtonCols = 15;
-            Bombs = 75;
+            ButtonRows = 16;
+            ButtonCols = 30;
+            Bombs = 99;
             aTimer.Close();
             NewGame();
         }

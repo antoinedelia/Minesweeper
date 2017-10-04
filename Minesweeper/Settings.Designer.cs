@@ -90,7 +90,7 @@
             0,
             0});
             this.numberBombs.Minimum = new decimal(new int[] {
-            1,
+            10,
             0,
             0,
             0});
@@ -107,12 +107,12 @@
             // 
             this.numberCols.Location = new System.Drawing.Point(152, 66);
             this.numberCols.Maximum = new decimal(new int[] {
-            20,
+            30,
             0,
             0,
             0});
             this.numberCols.Minimum = new decimal(new int[] {
-            10,
+            9,
             0,
             0,
             0});
@@ -129,12 +129,12 @@
             // 
             this.numberRows.Location = new System.Drawing.Point(152, 100);
             this.numberRows.Maximum = new decimal(new int[] {
-            20,
+            15,
             0,
             0,
             0});
             this.numberRows.Minimum = new decimal(new int[] {
-            10,
+            9,
             0,
             0,
             0});
